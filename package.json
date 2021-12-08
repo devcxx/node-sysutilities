@@ -1,0 +1,26 @@
+{
+  "name": "node-sysutilities",
+  "version": "1.0.0",
+  "description": "node-sysutilities",
+  "main": "lib/binding.js",
+  "private": true,
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^4.2.0"
+  },
+  "devDependencies": {
+    "electron": "^16.0.1",
+    "electron-rebuild": "^3.2.5",
+    "node-abi": "^3.5.0",
+    "node-gyp": "^8.4.0"
+  },
+  "gypfile": true,
+  "author": "xy",
+  "license": "ISC",
+  "files" : [
+    "lib/*.js",
+    "src",
+    "*.gyp",
+    "build/**/*.node"
+  ]
+}
