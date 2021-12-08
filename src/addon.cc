@@ -34,7 +34,11 @@ Napi::Value unsafeShowOpenWith(const Napi::CallbackInfo& info)
 {
     Napi::Env env = info.Env();
     REQUIRE_ARGUMENT_STRING(0, path);
+#if defined(_WIN32)
     Platform::File::UnsafeShowOpenWith(utf8ToWstring(path));
+#elif defined(__APPLE__)
+    Platform::File::UnsafeShowOpenWith(path);
+#endif
     return env.Null();
 }
 
@@ -42,7 +46,11 @@ Napi::Value unsafeOpenEmailLink(const Napi::CallbackInfo& info)
 {
     Napi::Env env = info.Env();
     REQUIRE_ARGUMENT_STRING(0, path);
+#if defined(_WIN32)
     Platform::File::UnsafeOpenEmailLink(utf8ToWstring(path));
+#elif defined(__APPLE__)
+    Platform::File::UnsafeOpenEmailLink(path);
+#endif
     return env.Null();
 }
 
@@ -50,7 +58,11 @@ Napi::Value unsafeLaunch(const Napi::CallbackInfo& info)
 {
     Napi::Env env = info.Env();
     REQUIRE_ARGUMENT_STRING(0, path);
+#if defined(_WIN32)
     Platform::File::UnsafeLaunch(utf8ToWstring(path));
+#elif defined(__APPLE__)
+    Platform::File::UnsafeLaunch(path);
+#endif
     return env.Null();
 }
 

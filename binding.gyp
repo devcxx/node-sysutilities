@@ -4,16 +4,23 @@
     {
       'target_name': 'node_sysutilities',
       'sources': [ 'src/addon.cc',
-                    'src/file_utilities_win.cpp',
+                    'src/file_utilities_win.cc',
                     'src/file_utilities_mac.mm'],
 
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")",],
        'conditions': [
-          ['OS!="linux"', {'sources/': [['exclude', '_linux\\.cc$']]}],
-          ['OS!="mac"', {'sources/': [['exclude', '_mac\\.cc|mm?$']]}],
+          ['OS=="mac"', {'sources/': [
+            ['include', '_mac\\.cc|mm?$'],
+            ['exclude', '_win\\.cc$']
+          ],
+             "libraries": [
+            '-framework AppKit',
+            ]
+          },
+          ],
           ['OS=="win"', {'sources/': [
             ['include', '_win\\.cc$'],
-            ['exclude', '_posix\\.cc$'],
+            ['exclude', '_mac\\.cc|mm?$'],
         ]}],
        ],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")",

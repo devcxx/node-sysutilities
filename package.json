@@ -17,7 +17,7 @@
   "gypfile": true,
   "author": "xy",
   "license": "ISC",
-  "files" : [
+  "files": [
     "lib/*.js",
     "src",
     "*.gyp",

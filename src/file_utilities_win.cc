@@ -30,7 +30,7 @@ namespace File {
         SHOpenWithDialog(0, &info);
     }
 
-    void UnsafeLaunch(const std::wstring& filepath)
+    void UnsafeLaunch(const std::string& filepath)
     {
         ShellExecuteW(0, L"open", filepath.c_str(), 0, 0, SW_SHOWNORMAL);
     }
