@@ -1,4 +1,4 @@
-Nodejs 国密标准加解密模块
+Node.js 系统调用工具类插件
 
 1. electron环境使用electron-rebuild编译
 macOS:

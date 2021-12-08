@@ -19,7 +19,6 @@
   "license": "ISC",
   "files": [
     "lib/*.js",
-    "src",
     "*.gyp",
     "build/**/*.node"
   ]
