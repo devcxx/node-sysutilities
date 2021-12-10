@@ -356,9 +356,11 @@ void UnsafeOpenEmailLink(const std::string& filepath)
 
 void UnsafeShowInFolder(const std::string& filepath)
 {
-    // @autoreleasepool {
-    // 	[[NSWorkspace sharedWorkspace] selectFile:Q2NSString(filepath) inFileViewerRootedAtPath:Q2NSString(folder)];
-    // }
+    size_t found = filepath.find_last_of("/\\");
+    std::string folder = path.substr(0, found);
+    @autoreleasepool {
+        [[NSWorkspace sharedWorkspace] selectFile:Q2NSString(filepath) inFileViewerRootedAtPath:Q2NSString(folder)];
+    }
 }
 
 } // namespace File

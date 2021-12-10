@@ -1,6 +1,7 @@
 #include "file_utilities_win.h"
 #include <Windows.h>
 #include <shlobj_core.h>
+#include <algorithm>
 
 namespace Platform {
 namespace File {
@@ -33,6 +34,21 @@ namespace File {
     void UnsafeLaunch(const std::wstring& filepath)
     {
         ShellExecuteW(0, L"open", filepath.c_str(), 0, 0, SW_SHOWNORMAL);
+    }
+
+    void UnsafeShowInFolder(const std::wstring& filepath)
+    {
+        std::wstring param(filepath);
+        // replace all positive slash
+        std::wstring positive(L"/");
+        std::wstring backslant(L"\\");
+        size_t pos = param.find(positive);
+        while (pos != std::wstring::npos) {
+            param.replace(pos, positive.size(), backslant);
+            pos = param.find(positive, pos + backslant.size());
+        }
+        param = L"/select" + param;
+        ShellExecuteW(NULL, L"open", L"explorer.exe", param.c_str(), NULL, SW_SHOWNORMAL);
     }
 
 } // namespace File
