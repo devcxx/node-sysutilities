@@ -8,4 +8,10 @@ namespace File {
     void UnsafeLaunch(const std::wstring& filepath);
     void UnsafeShowInFolder(const std::wstring& filepath);
 } // namespace File
+
+namespace SystemInfo
+{
+    std::string DeviceId();
+} // namespace SystemInfo
+
 } // namespace Platform

@@ -54,6 +54,13 @@ Napi::Value unsafeOpenEmailLink(const Napi::CallbackInfo& info)
     return env.Null();
 }
 
+Napi::Value deviceId(const Napi::CallbackInfo& info)
+{
+    Napi::Env env = info.Env();
+    std::string deviceId = Platform::SystemInfo::DeviceId();
+    return String::New(env, deviceId);
+}
+
 Napi::Value unsafeLaunch(const Napi::CallbackInfo& info)
 {
     Napi::Env env = info.Env();
@@ -70,6 +77,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "unsafeShowOpenWith"), Napi::Function::New(env, unsafeShowOpenWith));
     exports.Set(Napi::String::New(env, "unsafeOpenEmailLink"), Napi::Function::New(env, unsafeOpenEmailLink));
     exports.Set(Napi::String::New(env, "unsafeLaunch"), Napi::Function::New(env, unsafeLaunch));
+    exports.Set(Napi::String::New(env, "deviceId"), Napi::Function::New(env, deviceId));
   return exports;
 }
 

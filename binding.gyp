@@ -5,13 +5,17 @@
       'target_name': 'node_sysutilities',
       'sources': [ 'src/addon.cc',
                     'src/file_utilities_win.cc',
-                    'src/file_utilities_mac.mm'],
+                    'src/file_utilities_mac.mm',
+                    'src/registry_win.cc',
+                    'src/wmi/wmi.cpp',
+                    'src/wmi/wmiresult.cpp'],
 
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")",],
        'conditions': [
           ['OS=="mac"', {'sources/': [
             ['include', '_mac\\.cc|mm?$'],
-            ['exclude', '_win\\.cc$']
+            ['exclude', '_win\\.cc$'],
+            ['exclude', 'wmi/\\.cpp'],
           ],
              "libraries": [
             '-framework AppKit',
@@ -20,6 +24,7 @@
           ],
           ['OS=="win"', {'sources/': [
             ['include', '_win\\.cc$'],
+            ['include', 'wmi/\\.cpp'],
             ['exclude', '_mac\\.cc|mm?$'],
         ]}],
        ],

@@ -2,6 +2,14 @@
 #include <Windows.h>
 #include <shlobj_core.h>
 #include <algorithm>
+#include "registry_win.h"
+#include <iostream>
+
+#include "wmi/wmi.hpp"
+#include "wmi/wmiclasses.hpp"
+#include "wmi/unistd.h"
+
+#pragma comment(lib, "wbemuuid.lib")
 
 namespace Platform {
 namespace File {
@@ -52,4 +60,53 @@ namespace File {
     }
 
 } // namespace File
+} // namespace File
+
+namespace SystemInfo {
+
+    const char kMicrosoftCryptographyRegKey[] = "SOFTWARE\\Microsoft\\Cryptography";
+    const char kMicrosoftCryptographyMachineGuidRegKey[] = "MachineGuid";
+
+    typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS)(HANDLE, PBOOL);
+    LPFN_ISWOW64PROCESS fnIsWow64Process;
+    BOOL IsWow64()
+    {
+        BOOL bIsWow64 = FALSE;
+        //IsWow64Process is not available on all supported versions of Windows.
+        //Use GetModuleHandle to get a handle to the DLL that contains the function
+        //and GetProcAddress to get a pointer to the function if available.
+        fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+            GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
+
+        if (NULL != fnIsWow64Process) {
+            if (!fnIsWow64Process(GetCurrentProcess(), &bIsWow64)) {
+                //handle error
+            }
+        }
+        return bIsWow64;
+    }
+    std::string DeviceId()
+    {
+        std::string machineGuid;
+        RegKey key;
+        // !!!NOTE 32bit application MUST add
+        ACCESS_MASK access = KEY_READ;
+        if (IsWow64())
+            access |= KEY_WOW64_64KEY;
+        LONG sts = key.Open(HKEY_LOCAL_MACHINE, kMicrosoftCryptographyRegKey, access);
+        if (sts == ERROR_SUCCESS) {
+            sts = key.ReadValue(kMicrosoftCryptographyMachineGuidRegKey, &machineGuid);
+        }
+        else {
+            try {
+                Wmi::Win32_ComputerSystemProduct product = Wmi::retrieveWmi<Wmi::Win32_ComputerSystemProduct>();
+                machineGuid = product.UUID;
+            } catch (const Wmi::WmiException& ex) {
+                std::cout << "Wmi error: " << ex.errorMessage << ", Code: " << ex.hexErrorCode();
+            }
+        }
+
+        return machineGuid;
+    }
+}
 } // namespace Platform
