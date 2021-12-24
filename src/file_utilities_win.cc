@@ -60,7 +60,6 @@ namespace File {
     }
 
 } // namespace File
-} // namespace File
 
 namespace SystemInfo {
 
