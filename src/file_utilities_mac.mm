@@ -296,7 +296,7 @@ bool UnsafeShowOpenWith(const std::string &filepath) {
             NSArray *appsPaths = [[NSFileManager defaultManager] URLsForDirectory:NSApplicationDirectory inDomains:NSLocalDomainMask];
             if ([appsPaths count]) [openPanel setDirectoryURL:[appsPaths firstObject]];
             
-            [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+            // [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
                         
             if ([openPanel runModal] == NSModalResponseOK) {
                 if ([[openPanel URLs] count] > 0) {
@@ -357,11 +357,29 @@ void UnsafeOpenEmailLink(const std::string& filepath)
 void UnsafeShowInFolder(const std::string& filepath)
 {
     size_t found = filepath.find_last_of("/\\");
-    std::string folder = path.substr(0, found);
+    std::string folder = filepath.substr(0, found);
     @autoreleasepool {
         [[NSWorkspace sharedWorkspace] selectFile:Q2NSString(filepath) inFileViewerRootedAtPath:Q2NSString(folder)];
     }
 }
 
 } // namespace File
+
+namespace SystemInfo
+{
+    std::string DeviceId() {
+         // Use the hardware UUID available on OSX to identify this machine
+        std::string machineGuid;
+        uuid_t id;
+        // wait at most 5 seconds for gethostuuid to return
+        const timespec wait = {5, 0};
+        if (gethostuuid(id, &wait) == 0) {
+            char out[128] = {0};
+            uuid_unparse(id, out);
+            machineGuid = std::string(out);
+        }
+        return machineGuid;
+    }
+} // namespace SystemInfo
+
 } // namespace Platform

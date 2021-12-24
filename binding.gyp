@@ -15,7 +15,7 @@
           ['OS=="mac"', {'sources/': [
             ['include', '_mac\\.cc|mm?$'],
             ['exclude', '_win\\.cc$'],
-            ['exclude', 'wmi/\\.cpp'],
+            ['exclude', 'wmi\\.cpp'],
           ],
              "libraries": [
             '-framework AppKit',
@@ -24,7 +24,6 @@
           ],
           ['OS=="win"', {'sources/': [
             ['include', '_win\\.cc$'],
-            ['include', 'wmi/\\.cpp'],
             ['exclude', '_mac\\.cc|mm?$'],
         ]}],
        ],
