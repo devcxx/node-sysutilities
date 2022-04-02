@@ -25,7 +25,18 @@
           ['OS=="win"', {'sources/': [
             ['include', '_win\\.cc$'],
             ['exclude', '_mac\\.cc|mm?$'],
-        ]}],
+        ], 'include_dirs': [
+          './dep/openssl-include',
+        ], 'link_settings': {
+          'libraries': [
+            '-llibcrypto.lib',
+            '-llibssl.lib',
+            '-lcrypt32.lib',
+          ], 'library_dirs': [
+            './dep/OpenSSL-Win64',
+          ]
+        }
+        }],
        ],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")",
       ],
