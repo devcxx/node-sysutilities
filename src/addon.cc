@@ -124,8 +124,6 @@ Napi::Value httpGet(const Napi::CallbackInfo &info)
     // } else {
     //     return env.Null();
     // }
-    std::cout << url << std::endl;
-
 #if defined(_WIN32)
     static WinHttpClient httpClient(utf8ToWstring(url).c_str());
     bool ret = httpClient.SendHttpRequest();

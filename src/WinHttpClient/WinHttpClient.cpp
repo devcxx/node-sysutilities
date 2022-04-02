@@ -459,7 +459,7 @@ bool WinHttpClient::SendHttpRequest(const wstring &httpVerb, bool disableAutoRed
 							SetProgress(iCurrentBufferSize);
 							m_responseByteCountReceived = iCurrentBufferSize;
 
-							UINT codePage = CP_ACP;
+							UINT codePage = CP_UTF8;
 							DWORD dwFlag = MB_PRECOMPOSED;
 							if (_wcsnicmp(m_responseCharset.c_str(), L"utf-8", 5) == 0)
 							{
