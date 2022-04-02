@@ -19,7 +19,16 @@
           ],
              "libraries": [
             '-framework AppKit',
-            ]
+            ],
+            "include_dirs": [
+              '/usr/local/opt/openssl@1.1/include'
+            ],
+            'link_settings': {
+              'libraries': [
+                # This statically links libcrypto, whereas -lcrypto would dynamically link it
+                '/usr/local/opt/openssl@1.1/lib/libcrypto.a'
+              ]
+            }
           },
           ],
           ['OS=="win"', {'sources/': [

@@ -102,12 +102,20 @@ Napi::Value httpGet(const Napi::CallbackInfo& info)
     Napi::Env env = info.Env();
     REQUIRE_ARGUMENT_STRING(0, host);
     REQUIRE_ARGUMENT_STRING(1, path);
-    OPTIONAL_ARGUMENT_FUNCTION(2, cb);
+    //OPTIONAL_ARGUMENT_FUNCTION(2, cb);
     std::cout << host << std::endl;
     std::cout << path << std::endl;
     httplib::Client cli(host);
-    auto& res = cli.Get(path.c_str());
-
+    const httplib::Result&& res = cli.Get(path.c_str());
+    if (res) {
+        Napi::Object result = Napi::Object::New(env);
+        (result).Set("status", res->status);
+        (result).Set("reason", res->reason);
+        (result).Set("body", res->body);
+        return result;
+    } else {
+        return env.Null(); 
+    }
    /* if (!cb.IsUndefined() && cb.IsFunction()) {
         Napi::Object result = Napi::Object::New(env);
         (result).Set("status", res->status);
@@ -116,11 +124,6 @@ Napi::Value httpGet(const Napi::CallbackInfo& info)
         Napi::Value argv[] = { result };
         TRY_CATCH_CALL(info.This(), cb, 1, argv);
     }*/
-    Napi::Object result = Napi::Object::New(env);
-    (result).Set("status", res->status);
-    (result).Set("reason", res->reason);
-    (result).Set("body", res->body);
-    return result;
 }
 
 
