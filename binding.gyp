@@ -8,14 +8,22 @@
                     'src/file_utilities_mac.mm',
                     'src/registry_win.cc',
                     'src/wmi/wmi.cpp',
-                    'src/wmi/wmiresult.cpp'],
+                    'src/wmi/wmiresult.cpp',
+                    'src/restclient/connection.cc',
+                    'src/restclient/helpers.cc',
+                    'src/restclient/restclient.cc',
+                    'src/WinHttpClient/RegExp.cpp',
+                    'src/WinHttpClient/StringProcess.cpp',
+                    'src/WinHttpClient/WinHttpClient.cpp'],
 
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")",],
+      'defines': ['CURL_STATICLIB', 'HTTP_ONLY'],
        'conditions': [
           ['OS=="mac"', {'sources/': [
             ['include', '_mac\\.cc|mm?$'],
             ['exclude', '_win\\.cc$'],
             ['exclude', 'wmi\\.cpp'],
+            ['exclude', 'WinHttpClient\\.cpp'],
           ],
              "libraries": [
             '-framework AppKit',
@@ -36,13 +44,18 @@
             ['exclude', '_mac\\.cc|mm?$'],
         ], 'include_dirs': [
           './dep/openssl-include',
+          './dep/curl-include'
         ], 'link_settings': {
           'libraries': [
             '-llibcrypto.lib',
             '-llibssl.lib',
             '-lcrypt32.lib',
+            '-lwldap32.lib',
+            '-llibcurl.lib',
+            '-lws2_32.lib'
           ], 'library_dirs': [
             './dep/OpenSSL-Win64',
+            './dep/curl-Win64',
           ]
         }
         }],
@@ -57,10 +70,14 @@
         'MACOSX_DEPLOYMENT_TARGET': '10.7'
       },
       'msvs_settings': {
-        'VCCLCompilerTool': { 'ExceptionHandling': 1 },
+        'VCCLCompilerTool': {
+          'ExceptionHandling': 1,
+          'RuntimeLibrary': 0
+        },
         "VCLinkerTool": {
                 "AdditionalLibraryDirectories": [
-                ]
+                ],
+                'AdditionalOptions': [ '/NODEFAULTLIB:LIBCMT.lib' ],
               }
       }
     }
