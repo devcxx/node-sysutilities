@@ -12,9 +12,7 @@
                     'src/restclient/connection.cc',
                     'src/restclient/helpers.cc',
                     'src/restclient/restclient.cc',
-                    'src/WinHttpClient/RegExp.cpp',
-                    'src/WinHttpClient/StringProcess.cpp',
-                    'src/WinHttpClient/WinHttpClient.cpp'],
+                    ],
 
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")",],
       'defines': ['CURL_STATICLIB', 'HTTP_ONLY'],
@@ -34,7 +32,9 @@
             'link_settings': {
               'libraries': [
                 # This statically links libcrypto, whereas -lcrypto would dynamically link it
-                '/usr/local/opt/openssl@1.1/lib/libcrypto.a'
+                '/Users/xy/node-sysutilities/dep/curl-Darwin64/libcrypto.a',
+                '/Users/xy/node-sysutilities/dep/curl-Darwin64/libcurl.a',
+                '/Users/xy/node-sysutilities/dep/curl-Darwin64/libssl.a'
               ]
             }
           },
@@ -42,7 +42,13 @@
           ['OS=="win"', {'sources/': [
             ['include', '_win\\.cc$'],
             ['exclude', '_mac\\.cc|mm?$'],
-        ], 'include_dirs': [
+        ], 
+          'sources': [ 
+            'src/WinHttpClient/RegExp.cpp',
+            'src/WinHttpClient/StringProcess.cpp',
+            'src/WinHttpClient/WinHttpClient.cpp'
+          ],
+        'include_dirs': [
           './dep/openssl-include',
           './dep/curl-include'
         ], 'link_settings': {

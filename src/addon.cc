@@ -8,11 +8,12 @@
 #include "WinHttpClient/WinHttpClient.h"
 #elif defined(__APPLE__)
 #include "file_utilities_mac.h"
+#include "restclient/restclient.h"
 #endif
 
 // #define CPPHTTPLIB_OPENSSL_SUPPORT
 // #include "httplib.h"
-#include "restclient/restclient.h"
+
 
 std::string wstringToUtf8(const std::wstring &str)
 {
