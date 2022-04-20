@@ -164,7 +164,7 @@ Napi::Value httpGet(const Napi::CallbackInfo &info)
     // }
 #if defined(_WIN32)
     WinHttpClient httpClient(utf8ToWstring(url).c_str());
-    httpClient.SetTimeouts(timeout, timeout, timeout, timeout);
+    httpClient.SetTimeouts(0, timeout, timeout, 0);
     bool ret = httpClient.SendHttpRequest();
     if (ret)
     {
