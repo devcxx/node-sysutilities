@@ -14,7 +14,6 @@
 // #define CPPHTTPLIB_OPENSSL_SUPPORT
 // #include "httplib.h"
 
-
 std::string wstringToUtf8(const std::wstring &str)
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> strCnv;
@@ -29,6 +28,17 @@ std::wstring utf8ToWstring(const std::string &str)
 
 using namespace Napi;
 
+// A Napi substitute IsInt32()
+inline bool OtherIsInt(Napi::Number source) {
+    double orig_val = source.DoubleValue();
+    double int_val = (double)source.Int32Value();
+    if (orig_val == int_val) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 #define REQUIRE_ARGUMENT_STRING(i, var)                                                             \
     if (info.Length() <= (i) || !info[i].IsString())                                                \
     {                                                                                               \
@@ -36,6 +46,33 @@ using namespace Napi;
         return env.Null();                                                                          \
     }                                                                                               \
     std::string var = info[i].As<Napi::String>();
+
+#define REQUIRE_ARGUMENT_INTEGER(i, var)                                                              \
+    if (info.Length() <= (i) || !info[i].IsNumber())                                                  \
+    {                                                                                                 \
+        Napi::TypeError::New(env, "Argument " #i " must be an integer").ThrowAsJavaScriptException(); \
+        return env.Null();                                                                            \
+    }                                                                                                 \
+    int var(info[i].As<Napi::Number>().Int32Value());
+
+#define OPTIONAL_ARGUMENT_INTEGER(i, var, default)                                                    \
+    int var;                                                                                          \
+    if (info.Length() <= (i))                                                                         \
+    {                                                                                                 \
+        var = (default);                                                                              \
+    }                                                                                                 \
+    else if (info[i].IsNumber())                                                                      \
+    {                                                                                                 \
+        if (OtherIsInt(info[i].As<Number>()))                                                         \
+        {                                                                                             \
+            var = info[i].As<Napi::Number>().Int32Value();                                            \
+        }                                                                                             \
+    }                                                                                                 \
+    else                                                                                              \
+    {                                                                                                 \
+        Napi::TypeError::New(env, "Argument " #i " must be an integer").ThrowAsJavaScriptException(); \
+        return env.Null();                                                                            \
+    }
 
 Napi::Value unsafeShowOpenWith(const Napi::CallbackInfo &info)
 {
@@ -109,6 +146,7 @@ Napi::Value httpGet(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
     REQUIRE_ARGUMENT_STRING(0, url);
+    OPTIONAL_ARGUMENT_INTEGER(1, timeout, 3000);
     // REQUIRE_ARGUMENT_STRING(1, path);
     // OPTIONAL_ARGUMENT_FUNCTION(2, cb);
     // std::cout << host << std::endl;
@@ -126,6 +164,7 @@ Napi::Value httpGet(const Napi::CallbackInfo &info)
     // }
 #if defined(_WIN32)
     WinHttpClient httpClient(utf8ToWstring(url).c_str());
+    httpClient.SetTimeouts(timeout, timeout, timeout, timeout);
     bool ret = httpClient.SendHttpRequest();
     if (ret)
     {
@@ -142,6 +181,7 @@ Napi::Value httpGet(const Napi::CallbackInfo &info)
     }
 #elif defined(__APPLE__)
     RestClient::Response res = RestClient::get(url);
+    httpClient.SetTimeout(timeout / 1000);
     Napi::Object result = Napi::Object::New(env);
     (result).Set("code", res.code);
     (result).Set("body", res.body);
